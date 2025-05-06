@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
         ]
         self.tableRes = QTableWidget(0, len(headers), self)
         self.tableRes.setHorizontalHeaderLabels(headers)
-        self.tableRes.setGeometry(QRect(0, 300, 1920, 690))  # Posición y tamaño (x, y, ancho, alto)
+        self.tableRes.setGeometry(QRect(0, 300, 2400, 690))  # Posición y tamaño (x, y, ancho, alto)
         self.tableRes.setColumnWidth(0, 40)
         self.tableRes.setColumnWidth(1, 20)
         self.tableRes.setColumnWidth(2, 50)
@@ -273,6 +273,20 @@ class MainWindow(QMainWindow):
         if not self.validar_probabilidades(self.table4, 0, 1) or not self.validar_no_negativas(self.table4, 1):
             self.mostrar_error(
                 "Tabla 4: Las probabilidades deben ser no negativas y sumar 1. Las comisiones no pueden ser negativas.")
+            return
+        
+         # Obtener parámetros
+        cant_semanas = int(self.inputCantidadSimulaciones.value())
+        mostrar_desde = int(self.inputFila.value()) - 1  # Ajuste índice base 0
+        filas_a_mostrar = int(self.inputRangoFilas.value())
+        
+        # Validar rangos de filas
+        if mostrar_desde < 0 or mostrar_desde >= cant_semanas:
+            self.mostrar_error(f"Fila inicial debe estar entre 1 y {cant_semanas}")
+            return
+            
+        if filas_a_mostrar <=0 or (mostrar_desde + filas_a_mostrar) > cant_semanas:
+            self.mostrar_error(f"Rango excede cantidad de semanas ({cant_semanas})")
             return
 
         # Si todas las validaciones pasan
