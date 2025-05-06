@@ -2,6 +2,7 @@ from funciones import GeneradorAleatorio
 
 
 def simular(self):
+    # Obtener valores de las tablas
     valores_tabla1 = [self.table1.item(fila, 0).text() for fila in range(self.table1.rowCount())]
     valores_tabla2 = [self.table2.item(fila, 0).text() for fila in range(self.table2.rowCount())]
     valores_tabla3 = [(self.table3.item(fila, 0).text(), self.table3.item(fila, 1).text()) for fila in
@@ -11,18 +12,19 @@ def simular(self):
     cantidad_semanas = self.inputCantidadSimulaciones.value()
     fila_inicial = self.inputFila.value()
     numero_filas = self.inputRangoFilas.value()
+    umbral = float(self.inputUmbral.value())
 
-    #TODO: Descomentar para ver los valores
-    # mensaje = (
-    #     f"Tabla 1 (Pr. venta de autos): {valores_tabla1}\n"
-    #     f"Tabla 2 (Tipos de autos y probabilidades): {valores_tabla2}\n"
-    #     f"Tabla 3 (Comisiones y probabilidades): {valores_tabla3}\n"
-    #     f"Tabla 4 (Comisiones y probabilidades): {valores_tabla4}\n"
-    #     f"Cantidad de semanas (n): {cantidad_semanas}\n"
-    #     f"Filia inicial: {fila_inicial}\n"
-    #     f"numero de filas: {numero_filas}"
-    # )
-    # print(mensaje)
+    mensaje = (
+        f"Tabla 1 (Pr. venta de autos): {valores_tabla1}\n"
+        f"Tabla 2 (Tipos de autos y probabilidades): {valores_tabla2}\n"
+        f"Tabla 3 (Comisiones y probabilidades): {valores_tabla3}\n"
+        f"Tabla 4 (Comisiones y probabilidades): {valores_tabla4}\n"
+        f"Cantidad de semanas (n): {cantidad_semanas}\n"
+        f"Filia inicial: {fila_inicial}\n"
+        f"numero de filas: {numero_filas}"
+    )
+
+    print(mensaje)
 
     aleatorio4 = GeneradorAleatorio(19)
     aleatorio3 = GeneradorAleatorio(20)
@@ -32,15 +34,43 @@ def simular(self):
     resultado = []
 
     for i in range(int(cantidad_semanas)):
-        resultado.append(simular_semana(valores_tabla1, valores_tabla2, valores_tabla3, valores_tabla4, aleatorio1,
-                                        aleatorio2, aleatorio3, aleatorio4, i + 1))
+        if i == 0:
+            resultado.append(simular_semana(valores_tabla1, valores_tabla2, valores_tabla3, valores_tabla4, aleatorio1,
+                                            aleatorio2, aleatorio3, aleatorio4, i + 1, ["0", "0", "0", "0"],
+                                            [0, 0, 0, 0], umbral))
+        else:
+            resultado.append(simular_semana(valores_tabla1, valores_tabla2, valores_tabla3, valores_tabla4, aleatorio1,
+                                            aleatorio2, aleatorio3, aleatorio4, i + 1, resultado[-1][19],
+                                            resultado[-1][20], umbral))
 
     print(resultado)
 
     return mostrar_rango(int(fila_inicial), int(numero_filas), resultado)
 
 
-def simular_semana(t1, t2, t3, t4, a1, a2, a3, a4, i):
+def sumar_comisiones(v1, v2, v3, v4):
+    v1 = 0 if (v1 == "-") else float(v1)
+    v2 = 0 if (v2 == "-") else float(v2)
+    v3 = 0 if (v3 == "-") else float(v3)
+    v4 = 0 if (v4 == "-") else float(v4)
+    return str(v1 + v2 + v3 + v4)
+
+
+def contador_umbral(comisiones, contadores, umbral):
+    contador1 = contadores[0] if (float(comisiones[0]) <= umbral) else contadores[0] + 1
+    contador2 = contadores[1] if (float(comisiones[1]) <= umbral) else contadores[1] + 1
+    contador3 = contadores[2] if (float(comisiones[2]) <= umbral) else contadores[2] + 1
+    contador4 = contadores[3] if (float(comisiones[3]) <= umbral) else contadores[3] + 1
+    contadores = [contador1, contador2, contador3, contador4]
+    return contadores
+
+
+def promedio_ventas_por_semana(ventaSA, ventasS, index):  # SA Semana Anterior S Semana Actual
+    comisiones = [(float(ventaSA[i]) * (index - 1) + float(ventasS[i])) / index for i in range(4)]
+    return comisiones
+
+
+def simular_semana(t1, t2, t3, t4, a1, a2, a3, a4, index, comisionesAnt, contadoresAnt, umbral):
     rnd_ventas_v1 = a1.generar_aleatorio()
     ventas_v1 = get_ventas_from_table(t1, rnd_ventas_v1)
 
@@ -55,7 +85,7 @@ def simular_semana(t1, t2, t3, t4, a1, a2, a3, a4, i):
 
     ventas_all = [ventas_v1, ventas_v2, ventas_v3, ventas_v4]
 
-    resultado = [i,
+    resultado = [index,
                  [rnd_ventas_v1, ventas_v1, rnd_ventas_v2, ventas_v2, rnd_ventas_v3, ventas_v3, rnd_ventas_v4,
                   ventas_v4]]
 
@@ -70,11 +100,21 @@ def simular_semana(t1, t2, t3, t4, a1, a2, a3, a4, i):
             else:
                 resultado += [["-", "-", "-", "-"]]
 
-    #TODO: Agregar a la tabla resultado
-    # resultado 2 a 5 de indice (1 a 4) tiene la ventas de v1 resultado[1][3] + [2][3] + [3][3] + [4][3] = comision semanal
-    # resultado 2 a 5 de indice (1 a 4) tiene la ventas de v2 [5][3] + [6][3] + [7][3] + [8][3] = comision semanal
-    # resultado 2 a 5 de indice (1 a 4) tiene la ventas de v3 [9][3] + [10][3] + [11][3] + [12][3] = comision semanal
-    # resultado 2 a 5 de indice (1 a 4) tiene la ventas de v4 [13][3] + [14][3] + [15][3] + [16][3] = comision semanal
+    comision_semana_v1 = sumar_comisiones(resultado[2][3], resultado[3][3], resultado[4][3], resultado[5][3])
+    comision_semana_v2 = sumar_comisiones(resultado[6][3], resultado[7][3], resultado[8][3], resultado[9][3])
+    comision_semana_v3 = sumar_comisiones(resultado[10][3], resultado[11][3], resultado[12][3], resultado[13][3])
+    comision_semana_v4 = sumar_comisiones(resultado[14][3], resultado[15][3], resultado[16][3], resultado[17][3])
+
+    comisiones = [comision_semana_v1, comision_semana_v2, comision_semana_v3, comision_semana_v4]
+    resultado += [comisiones]
+    if index == 1:
+        comisiones_acumulado = comisiones
+    else:
+        comisiones_acumulado = promedio_ventas_por_semana(comisionesAnt, comisiones, index)
+    resultado += [comisiones_acumulado]
+
+    supera_umbral = contador_umbral(comisiones, contadoresAnt, umbral)
+    resultado += [supera_umbral]
 
     return resultado
 
@@ -121,18 +161,21 @@ def get_comision_auto(tablaComisiones, rnd):
 
 def mostrar_rango(inicial, numero_filas, resultado):
     filas = resultado[inicial - 1:inicial - 1 + numero_filas]
+    ultima_fila = resultado[-1]  # Obtener la última fila
+    filas.insert(0, ultima_fila)  # Insertar la última fila como la primera
     for i in range(len(filas)):
         print(filas[i])
     return filas
 
-# TODO: Descomentar para probar backend
-# if __name__ == '__main__':
-#     print("Simulación iniciada")
+if __name__ == '__main__':
+    print("Simulación iniciada")
 # aleatorio4 = GeneradorAleatorio(19)
 # aleatorio3 = GeneradorAleatorio(20)
 # aleatorio2 = GeneradorAleatorio(21)
 # aleatorio1 = GeneradorAleatorio(22)
+#
 # resultado = []
+#
 # for i in range(100000):
 #     resultado.append(simular_semana(['0.2', '0.3', '0.3', '0.15', '0.05'], ['0.5', '0.35', '0.15'],
 #                                     [('0.4', '400'), ('0.6', '500')],
@@ -141,4 +184,5 @@ def mostrar_rango(inicial, numero_filas, resultado):
 #                                     aleatorio4,i+1))
 # # print("final")
 # print(resultado)
+
 # mostrar_rango(22, 68, resultado)

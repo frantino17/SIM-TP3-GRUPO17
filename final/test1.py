@@ -1,10 +1,11 @@
 import sys
-from app import simular
+from main import simular
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QPushButton, QMessageBox, QLabel, QComboBox, QHeaderView
 )
 from PyQt5.QtCore import QRect
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,7 +19,7 @@ class MainWindow(QMainWindow):
         self.table1.setHorizontalHeaderLabels(["Pr. venta de autos"])
         self.table1.setVerticalHeaderLabels(["0", "1", "2", "3", "4"])
         self.table1.setEditTriggers(QTableWidget.AllEditTriggers)  # Permitir edición
-        self.table1.setGeometry(QRect(50, 200, 170, 218))  # Posición y tamaño (x, y, ancho, alto)
+        self.table1.setGeometry(QRect(320, 10, 170, 218))  # Posición y tamaño (x, y, ancho, alto)
         self.table1.setColumnWidth(0, 150)
 
         valores_tabla1 = [0.20, 0.30, 0.30, 0.15, 0.05]
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow):
         self.table2 = QTableWidget(3, 1, self)
         self.table2.setHorizontalHeaderLabels(["Probabilidad"])
         self.table2.setVerticalHeaderLabels(["Compacto", "Mediano", "De Lujo"])
-        self.table2.setGeometry(QRect(300, 200, 200, 144))  # Posición y tamaño (x, y, ancho, alto)
+        self.table2.setGeometry(QRect(510, 10, 200, 144))  # Posición y tamaño (x, y, ancho, alto)
 
         probabilidades = [0.50, 0.35, 0.15]
         for fila, probabilidad in enumerate(probabilidades):
@@ -38,7 +39,7 @@ class MainWindow(QMainWindow):
         # Tabla 3: Comisiones y probabilidades
         self.table3 = QTableWidget(2, 2, self)
         self.table3.setHorizontalHeaderLabels(["Probabilidad", "Comisión"])
-        self.table3.setGeometry(QRect(550, 200, 250, 144))  # Posición y tamaño (x, y, ancho, alto)
+        self.table3.setGeometry(QRect(730, 10, 250, 144))  # Posición y tamaño (x, y, ancho, alto)
         self.table3.setColumnWidth(0, 100)
 
         comision = [400, 500]
@@ -51,7 +52,7 @@ class MainWindow(QMainWindow):
         # Tabla 4: Comisiones y probabilidades
         self.table4 = QTableWidget(3, 2, self)
         self.table4.setHorizontalHeaderLabels(["Probabilidad", "Comisión"])
-        self.table4.setGeometry(QRect(850, 200, 250, 144))  # Posición y tamaño (x, y, ancho, alto)
+        self.table4.setGeometry(QRect(1000, 10, 250, 144))  # Posición y tamaño (x, y, ancho, alto)
         self.table4.setColumnWidth(0, 100)
 
         comision = [1000, 1500, 2000]
@@ -64,7 +65,8 @@ class MainWindow(QMainWindow):
         self.label = QLabel("Cantidad de semanas (n):", self)
         self.label.setGeometry(QRect(50, 10, 150, 30))
         self.inputCantidadSimulaciones = QtWidgets.QDoubleSpinBox(self)
-        self.inputCantidadSimulaciones.setGeometry(QtCore.QRect(200, 10, 100, 25))  #Posición y tamaño (x, y, ancho, alto)
+        self.inputCantidadSimulaciones.setGeometry(
+            QtCore.QRect(200, 10, 100, 25))  # Posición y tamaño (x, y, ancho, alto)
         self.inputCantidadSimulaciones.setDecimals(0)  # No permitir decimales
         self.inputCantidadSimulaciones.setMinimum(100)  # Valor mínimo permitido (1)
         self.inputCantidadSimulaciones.setMaximum(1000000000.0)
@@ -85,10 +87,17 @@ class MainWindow(QMainWindow):
         self.inputRangoFilas.setMinimum(1.0)  # Valor mínimo permitido (1)
         self.inputRangoFilas.setMaximum(1000000000.0)
 
+        self.label3 = QLabel("Umbral de comision (y):", self)
+        self.label3.setGeometry(QRect(50, 100, 150, 30))
+        self.inputUmbral = QtWidgets.QDoubleSpinBox(self)
+        self.inputUmbral.setGeometry(QtCore.QRect(200, 100, 100, 25))  # Posición y tamaño (x, y, ancho, alto)
+        self.inputUmbral.setDecimals(0)  # No permitir decimales
+        self.inputUmbral.setMinimum(0)  # Valor mínimo permitido (0)
+        self.inputUmbral.setMaximum(1000000000.0)
 
         # Botón "Simular"
         self.simular_button = QPushButton("Simular", self)
-        self.simular_button.setGeometry(QRect(500, 450, 200, 50))  # Posición y tamaño (x, y, ancho, alto)
+        self.simular_button.setGeometry(QRect(1600, 250, 200, 50))  # Posición y tamaño (x, y, ancho, alto)
         self.simular_button.clicked.connect(self.simular)
 
         headers = [
@@ -110,10 +119,15 @@ class MainWindow(QMainWindow):
             'RND\nTipo\nAuto\nventa 2 v4', 'Tipo\nAuto v2', 'RND\nComisión\nv2', 'Comisión\nv2',
             'RND\nTipo\nAuto\nventa 3 v4', 'Tipo\nAuto v3', 'RND\nComisión\nv3', 'Comisión\nv3',
             'RND\nTipo\nAuto\nventa 4 v4', 'Tipo\nAuto v4', 'RND\nComisión\nv4', 'Comisión\nv4',
+            'Comision\nTotal\nSemana V1', 'Comision\nTotal\nSemana V2', 'Comision\nTotal\nSemana V3',
+            'Comision\nTotal\nSemana V4',
+            'Comision\npromedio\nv1', 'Comision\npromedio\nv2', 'Comision\npromedio\nv3', 'Comision\npromedio\nv4',
+            'Contador\nSupera\nUmbral v1', 'Contador\nSupera\nUmbral v2', 'Contador\nSupera\nUmbral v3',
+            'Contador\nSupera\nUmbral v4',
         ]
         self.tableRes = QTableWidget(0, len(headers), self)
         self.tableRes.setHorizontalHeaderLabels(headers)
-        self.tableRes.setGeometry(QRect(0, 500, 1920,490))  # Posición y tamaño (x, y, ancho, alto)
+        self.tableRes.setGeometry(QRect(0, 300, 1920, 690))  # Posición y tamaño (x, y, ancho, alto)
         self.tableRes.setColumnWidth(0, 40)
         self.tableRes.setColumnWidth(1, 20)
         self.tableRes.setColumnWidth(2, 50)
@@ -193,6 +207,32 @@ class MainWindow(QMainWindow):
         self.tableRes.setColumnWidth(71, 70)
         self.tableRes.setColumnWidth(72, 70)
 
+        self.tableRes.setColumnWidth(73, 90)
+        self.tableRes.setColumnWidth(74, 90)
+        self.tableRes.setColumnWidth(75, 90)
+        self.tableRes.setColumnWidth(76, 90)
+        self.tableRes.setColumnWidth(77, 90)
+        self.tableRes.setColumnWidth(78, 90)
+        self.tableRes.setColumnWidth(79, 90)
+        self.tableRes.setColumnWidth(80, 90)
+
+        self.label_pv1 = QLabel("Prob que V1 tenga comision mayor a y:", self)
+        self.label_pv1.setGeometry(QRect(1270, 10, 200, 30))
+        self.label_pv2 = QLabel("Prob que V2 tenga comision mayor a y:", self)
+        self.label_pv2.setGeometry(QRect(1270, 40, 200, 30))
+        self.label_pv3 = QLabel("Prob que V3 tenga comision mayor a y:", self)
+        self.label_pv3.setGeometry(QRect(1270, 70, 200, 30))
+        self.label_pv4 = QLabel("Prob que V4 tenga comision mayor a y:", self)
+        self.label_pv4.setGeometry(QRect(1270, 100, 200, 30))
+
+        self.label_pv1 = QLabel("", self)
+        self.label_pv1.setGeometry(QRect(1470, 10, 200, 30))
+        self.label_pv2 = QLabel("", self)
+        self.label_pv2.setGeometry(QRect(1470, 40, 200, 30))
+        self.label_pv3 = QLabel("", self)
+        self.label_pv3.setGeometry(QRect(1470, 70, 200, 30))
+        self.label_pv4 = QLabel("", self)
+        self.label_pv4.setGeometry(QRect(1470, 100, 200, 30))
 
     def simular(self):
         # Validar tabla 1
@@ -207,12 +247,14 @@ class MainWindow(QMainWindow):
 
         # Validar tabla 3
         if not self.validar_probabilidades(self.table3, 0, 1) or not self.validar_no_negativas(self.table3, 1):
-            self.mostrar_error("Tabla 3: Las probabilidades deben ser no negativas y sumar 1. Las comisiones no pueden ser negativas.")
+            self.mostrar_error(
+                "Tabla 3: Las probabilidades deben ser no negativas y sumar 1. Las comisiones no pueden ser negativas.")
             return
 
         # Validar tabla 4
         if not self.validar_probabilidades(self.table4, 0, 1) or not self.validar_no_negativas(self.table4, 1):
-            self.mostrar_error("Tabla 4: Las probabilidades deben ser no negativas y sumar 1. Las comisiones no pueden ser negativas.")
+            self.mostrar_error(
+                "Tabla 4: Las probabilidades deben ser no negativas y sumar 1. Las comisiones no pueden ser negativas.")
             return
 
         # Si todas las validaciones pasan
@@ -220,6 +262,17 @@ class MainWindow(QMainWindow):
         vec = simular(self)
 
         self.cargar_tabla(self.tableRes, vec)
+        cant_semanas = int(self.inputCantidadSimulaciones.value())
+
+        porcV1 = vec[0][20][0] / cant_semanas * 100
+        porcV2 = vec[0][20][1] / cant_semanas * 100
+        porcV3 = vec[0][20][2] / cant_semanas * 100
+        porcV4 = vec[0][20][3] / cant_semanas * 100
+
+        self.label_pv1.setText(f"{porcV1:.2f}%")
+        self.label_pv2.setText(f"{porcV2:.2f}%")
+        self.label_pv3.setText(f"{porcV3:.2f}%")
+        self.label_pv4.setText(f"{porcV4:.2f}%")
 
     def validar_probabilidades(self, table, columna, suma_esperada):
         """Validar que las probabilidades no sean negativas y sumen un valor esperado."""
@@ -276,6 +329,7 @@ class MainWindow(QMainWindow):
             fila_aux = self.flatten(fila)
             for col_idx, valor in enumerate(fila_aux):
                 table.setItem(fila_idx, col_idx, QTableWidgetItem(str(valor)))
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
