@@ -234,6 +234,24 @@ class MainWindow(QMainWindow):
         self.label_pv4 = QLabel("", self)
         self.label_pv4.setGeometry(QRect(1470, 100, 200, 30))
 
+        self.label_cpv1 = QLabel("Comision promedio V1:", self)
+        self.label_cpv1.setGeometry(QRect(1670, 10, 200, 30))
+        self.label_cpv2 = QLabel("Comision promedio V2", self)
+        self.label_cpv2.setGeometry(QRect(1670, 40, 200, 30))
+        self.label_cpv3 = QLabel("Comision promedio V3", self)
+        self.label_cpv3.setGeometry(QRect(1670, 70, 200, 30))
+        self.label_cpv4 = QLabel("Comision promedio V4", self)
+        self.label_cpv4.setGeometry(QRect(1670, 100, 200, 30))
+
+        self.label_cpv1 = QLabel("", self)
+        self.label_cpv1.setGeometry(QRect(1870, 10, 200, 30))
+        self.label_cpv2 = QLabel("", self)
+        self.label_cpv2.setGeometry(QRect(1870, 40, 200, 30))
+        self.label_cpv3 = QLabel("", self)
+        self.label_cpv3.setGeometry(QRect(1870, 70, 200, 30))
+        self.label_cpv4 = QLabel("", self)
+        self.label_cpv4.setGeometry(QRect(1870, 100, 200, 30))
+
     def simular(self):
         # Validar tabla 1
         if not self.validar_probabilidades(self.table1, 0, 1):
@@ -273,6 +291,16 @@ class MainWindow(QMainWindow):
         self.label_pv2.setText(f"{porcV2:.2f}%")
         self.label_pv3.setText(f"{porcV3:.2f}%")
         self.label_pv4.setText(f"{porcV4:.2f}%")
+
+        cpV1 = vec[0][19][0]
+        cpV2 = vec[0][19][1]
+        cpV3 = vec[0][19][2]
+        cpV4 = vec[0][19][3]
+
+        self.label_cpv1.setText(f"{cpV1:.2f}")
+        self.label_cpv2.setText(f"{cpV2:.2f}")
+        self.label_cpv3.setText(f"{cpV3:.2f}")
+        self.label_cpv4.setText(f"{cpV4:.2f}")
 
     def validar_probabilidades(self, table, columna, suma_esperada):
         """Validar que las probabilidades no sean negativas y sumen un valor esperado."""
@@ -318,9 +346,9 @@ class MainWindow(QMainWindow):
         flat_list = []
         for item in nested_list:
             if isinstance(item, list):
-                flat_list.extend(self.flatten(item))  # Recursively flatten nested lists
+                flat_list.extend(self.flatten(item))
             else:
-                flat_list.append(item)  # Append non-list items directly
+                flat_list.append(item)
         return flat_list
 
     def cargar_tabla(self, table, vector):
